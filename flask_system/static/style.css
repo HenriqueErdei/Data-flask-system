@@ -1,0 +1,239 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.container {
+    margin-top: 30px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    color: #e0e0e0;
+    background: transparent;
+}
+
+.alert,
+.alert-info,
+.alert-login,
+.flash-message,
+.flask-message {
+  background: #fff !important;
+  color: #111 !important;
+  border: 1px solid #ddd !important;
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 8px 0 rgba(31,38,135,0.08) !important;
+  padding: 18px 24px !important;
+  margin-bottom: 18px !important;
+  text-align: center;
+}
+
+.btn-primary, .btn-success, .btn-warning, .btn-secondary {
+    min-width: 120px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(30,60,114,.25);
+    background: rgba(34,34,34,0.85) !important;
+    color: #fff !important;
+}
+
+input, select, textarea {
+    background: rgba(34,34,34,0.85) !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    border: 1px solid #444 !important;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    transition: background 0.2s;
+}
+
+::-webkit-input-placeholder { color: #bbb !important; }
+::-moz-placeholder { color: #bbb !important; }
+:-ms-input-placeholder { color: #bbb !important; }
+::placeholder { color: #bbb !important; } 
+
+/* Botões customizados do sistema */
+a.btn-modulo, button.btn-modulo, input.btn-modulo, .btn-modulo, .btn-painel-admin {
+    background: var(--main-theme-color) !important;
+    color: #222 !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10) !important;
+    transition: background 0.2s, color 0.2s !important;
+    padding: 10px 24px !important;
+    margin: 4px 0 !important;
+    display: inline-block !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-size: 1.1em !important;
+    cursor: pointer !important;
+    outline: none !important;
+    min-width: 120px;
+}
+a.btn-modulo:hover, button.btn-modulo:hover, input.btn-modulo:hover, .btn-modulo:hover, .btn-painel-admin:hover, .btn-cancelar:hover {
+    background: var(--main-theme-color) !important;
+    filter: brightness(0.85) !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+a.btn-circular, button.btn-circular {
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em !important;
+    border: none !important;
+    box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10) !important;
+    background: var(--main-theme-color) !important;
+    color: #222 !important;
+}
+a.btn-circular:hover, button.btn-circular:hover {
+    filter: brightness(0.85);
+    color: #fff !important;
+}
+.btn-circular {
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em !important;
+    border: none !important;
+}
+.btn-circular i {
+    font-size: 1.4em !important;
+    vertical-align: middle;
+    line-height: 1;
+}
+.btn-circular .bi-pencil {
+    font-size: 1.2em !important;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.btn-circular .bi-trash {
+    font-size: 1.4em !important;
+}
+
+.btn-danger {
+    background: #e53935 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10) !important;
+}
+.btn-danger:hover {
+    filter: brightness(0.85);
+    color: #fff !important;
+}
+.btn-cancelar {
+    background: #7b8794 !important;
+    color: #fff !important;
+}
+.btn-cancelar:hover {
+    filter: brightness(0.85);
+    color: #fff !important;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    accent-color: var(--main-theme-color) !important;
+}
+input[type="radio"]:checked, input[type="checkbox"]:checked {
+    accent-color: var(--main-theme-color) !important;
+    border: 2px solid var(--main-theme-color) !important;
+}
+input[type="radio"]:focus, input[type="checkbox"]:focus {
+    outline: 2px solid var(--main-theme-color) !important;
+    box-shadow: 0 0 0 2px var(--main-theme-color) !important;
+}
+@media (max-width: 600px) {
+    .btn-modulo, .btn-painel-admin {
+        width: 100% !important;
+        min-width: unset;
+        margin: 6px 0 !important;
+    }
+} 
+
+/* Radio customizado preenchido */
+.radio-custom {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-right: 24px;
+}
+.radio-custom input[type="radio"] {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+.radio-custom .custom-radio {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2.5px solid var(--main-theme-color);
+    background: transparent;
+    margin-right: 8px;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+}
+.radio-custom input[type="radio"]:checked + .custom-radio {
+    background: var(--main-theme-color);
+    border-color: var(--main-theme-color);
+}
+.radio-custom input[type="radio"]:focus + .custom-radio {
+    box-shadow: 0 0 0 2px var(--main-theme-color);
+} 
+
+input[type="checkbox"] {
+    accent-color: var(--main-theme-color) !important;
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    vertical-align: middle;
+} 
+
+.sidebar a {
+    color: #f1f1f1;
+    transition: color 0.2s, background 0.2s;
+}
+.sidebar a i {
+    color: inherit !important;
+    transition: color 0.2s;
+}
+.sidebar a.active,
+.sidebar a.active i,
+.sidebar a.active .menu-label,
+.sidebar a:hover,
+.sidebar a:hover i,
+.sidebar a:hover .menu-label {
+    color: var(--main-theme-color) !important;
+} 
+
+.glass {
+    box-shadow: 0 0 24px 0 color-mix(in srgb, var(--main-theme-color) 30%, transparent), 0 2px 12px 0 rgba(0,0,0,0.08) !important;
+} 

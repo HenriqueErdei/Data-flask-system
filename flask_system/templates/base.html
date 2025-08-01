@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema Flask Empresas{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    {% block styles %}{% endblock %}
+    <style>
+        :root {
+            --glass-bg-dark: rgba(34, 34, 34, 0.65);
+            --glass-border: rgba(255,255,255,0.10);
+            --sidebar-width: 240px;
+            --sidebar-width-min: 64px;
+            --main-blur: 16px;
+            --main-shadow: 0 8px 32px 0 rgba(0,0,0,0.45);
+            --main-radius: 22px;
+            --main-font: 'Inter', 'Segoe UI', Arial, sans-serif;
+            --main-theme-color: {{ settings.cor_tema or '#ffd700' }};
+        }
+        html, body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #181a1b 0%, #232526 100%);
+            font-family: var(--main-font);
+            color: #f1f1f1;
+        }
+        .glass {
+            background: var(--glass-bg-dark);
+            border-radius: var(--main-radius);
+            box-shadow: var(--main-shadow);
+            backdrop-filter: blur(var(--main-blur));
+            -webkit-backdrop-filter: blur(var(--main-blur));
+            border: 1.5px solid var(--glass-border);
+            transition: background 0.3s;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: var(--sidebar-width);
+            padding: 32px 0 0 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            transition: width 0.3s;
+        }
+        .sidebar.minimized {
+            width: var(--sidebar-width-min);
+        }
+        .sidebar .glass {
+            width: 90%;
+            height: 92vh;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            background: var(--glass-bg-dark);
+            transition: width 0.3s, padding 0.3s;
+            justify-content: center;
+            position: relative;
+        }
+        .sidebar.minimized .glass {
+            width: 48px;
+            padding: 12px 0;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar a {
+            color: #f1f1f1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin: 4px 12px;
+            transition: background 0.2s, color 0.2s, padding 0.3s;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.08em;
+            white-space: nowrap;
+        }
+        .sidebar.minimized a {
+            justify-content: center;
+            padding: 12px 0;
+            gap: 0;
+        }
+        .sidebar a.active, .sidebar a:hover {
+            background: rgba(255,255,255,0.08);
+            color: var(--main-theme-color);
+        }
+        .sidebar .menu-label {
+            transition: opacity 0.3s, width 0.3s;
+            opacity: 1;
+            width: auto;
+            display: inline-block;
+        }
+        .sidebar.minimized .menu-label {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--main-theme-color);
+            font-size: 1.5em;
+            margin: 0 0 18px 0;
+            align-self: center;
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-toggle:hover {
+            color: #fff;
+        }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 40px 24px 24px 24px;
+            min-height: 100vh;
+            transition: margin 0.3s;
+        }
+        .sidebar.minimized ~ .main-content {
+            margin-left: var(--sidebar-width-min);
+        }
+        @media (max-width: 900px) {
+            .sidebar { position: static; width: 100vw; height: auto; flex-direction: row; padding: 0; }
+            .sidebar .glass { flex-direction: row; width: 100vw; justify-content: center; padding: 8px 0; }
+            .main-content { margin-left: 0; padding-top: 100px; }
+        }
+        .window-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px 8px 18px;
+            border-radius: 12px 12px 0 0;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 18px;
+        }
+        .window-dot {
+            width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+        }
+        .window-dot.red { background: #ff5f56; }
+        .window-dot.yellow { background: #ffbd2e; }
+        .window-dot.green { background: #27c93f; }
+        .glass h2, .glass h1, .glass h3, .glass h4 { color: #fff; }
+        .glass label, .glass th, .glass td, .glass p, .glass span, .glass li, .glass a { color: #e0e0e0; }
+        .glass .btn-primary, .glass .btn-success, .glass .btn-warning, .glass .btn-secondary {
+            border: none;
+            box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10);
+        }
+        .glass .btn-primary {
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        }
+        .glass .btn-primary:hover {
+            background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
+        }
+        .sidebar.minimized .sidebar-logo {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    {% block login_page %}
+    <div class="sidebar" id="sidebar">
+        <div class="glass">
+            <div class="sidebar-logo d-flex align-items-center justify-content-center mb-3 logo-expand" style="height:110px;">
+                {% if settings.logo_path %}
+                    <img src="{{ settings.logo_path }}" alt="Logo" style="max-height:80px; max-width:90px; background:#fff; border-radius:12px; padding:6px;">
+                {% else %}
+                    <i class="bi bi-bar-chart-line" style="font-size:4.2rem;color:var(--main-theme-color);"></i>
+                {% endif %}
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" title="Minimizar/Expandir menu"><i class="bi bi-chevron-left"></i></button>
+            <a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="bi bi-house"></i><span class="menu-label">Início</span></a>
+            {% if session.get('is_admin') %}
+                <a href="/admin" class="{% if '/admin' in request.path %}active{% endif %}"><i class="bi bi-gear"></i><span class="menu-label">Painel Admin</span></a>
+            {% endif %}
+            {% if session.get('pode_faturamento') %}
+                <a href="/faturamento" class="{% if '/faturamento' in request.path %}active{% endif %}"><i class="bi bi-bar-chart"></i><span class="menu-label">Faturamento</span></a>
+            {% endif %}
+            {% if session.get('pode_estoque') %}
+                <a href="/estoque" class="{% if '/estoque' in request.path %}active{% endif %}"><i class="bi bi-boxes"></i><span class="menu-label">Estoque</span></a>
+            {% endif %}
+            {% if session.get('pode_compras') %}
+                <a href="/compras" class="{% if '/compras' in request.path %}active{% endif %}"><i class="bi bi-cart"></i><span class="menu-label">Compras</span></a>
+            {% endif %}
+            {% if session.get('pode_financeiro') %}
+                <a href="/financeiro" class="{% if '/financeiro' in request.path %}active{% endif %}"><i class="bi bi-wallet2"></i><span class="menu-label">Financeiro</span></a>
+            {% endif %}
+            {% if session.get('pode_relatorios') %}
+                <a href="/relatorios" class="{% if '/relatorios' in request.path %}active{% endif %}"><i class="bi bi-clipboard-data"></i><span class="menu-label">Relatórios</span></a>
+            {% endif %}
+            <a href="/logout"><i class="bi bi-box-arrow-right"></i><span class="menu-label">Sair</span></a>
+        </div>
+    </div>
+    <div class="main-content" id="mainContent">
+        <div class="glass p-4">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-info fade show" role="alert" style="transition: opacity 0.5s;">
+                        {% for message in messages %}
+                            <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    {% endblock %}
+    {% block extra_chat %}{% endblock %}
+    <script>
+        // Minimizar/expandir menu lateral
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        sidebarToggle.onclick = function() {
+            sidebar.classList.toggle('minimized');
+        };
+    </script>
+</body>
+</html>

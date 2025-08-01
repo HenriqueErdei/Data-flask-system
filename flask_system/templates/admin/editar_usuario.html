@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Editar Usuário{% endblock %}
+{% block content %}
+<h2>Editar Usuário</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="username" class="form-label">Usuário</label>
+        <input type="text" class="form-control" id="username" name="username" value="{{ usuario.username }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ usuario.email }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Nova Senha</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Deixe em branco para não alterar">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Permissões de Acesso</label><br>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input permissao-check" type="checkbox" id="pode_estoque" name="pode_estoque" {% if usuario.pode_estoque %}checked{% endif %}>
+            <label class="form-check-label" for="pode_estoque">Estoque</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input permissao-check" type="checkbox" id="pode_compras" name="pode_compras" {% if usuario.pode_compras %}checked{% endif %}>
+            <label class="form-check-label" for="pode_compras">Compras</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input permissao-check" type="checkbox" id="pode_faturamento" name="pode_faturamento" {% if usuario.pode_faturamento %}checked{% endif %}>
+            <label class="form-check-label" for="pode_faturamento">Faturamento</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input permissao-check" type="checkbox" id="pode_financeiro" name="pode_financeiro" {% if usuario.pode_financeiro %}checked{% endif %}>
+            <label class="form-check-label" for="pode_financeiro">Financeiro</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input permissao-check" type="checkbox" id="pode_relatorios" name="pode_relatorios" {% if usuario.pode_relatorios %}checked{% endif %}>
+            <label class="form-check-label" for="pode_relatorios">Relatórios</label>
+        </div>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input admin-check" type="checkbox" id="is_admin" name="is_admin" {% if usuario.is_admin %}checked{% endif %}>
+        <label class="form-check-label" for="is_admin">Administrador</label>
+    </div>
+    <button type="submit" class="btn btn-salvar">Salvar</button>
+    <a href="/admin/usuarios" class="btn btn-secondary">Cancelar</a>
+</form>
+<style>
+.admin-check:checked {
+    background-color: var(--main-yellow) !important;
+    border-color: var(--main-yellow) !important;
+}
+.admin-check:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255,214,0,0.25) !important;
+}
+.permissao-check:checked {
+    background-color: var(--main-yellow) !important;
+    border-color: var(--main-yellow) !important;
+}
+.permissao-check:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255,214,0,0.25) !important;
+}
+.btn-salvar {
+    background: var(--main-yellow) !important;
+    color: #222 !important;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10);
+    transition: background 0.2s, color 0.2s;
+}
+.btn-salvar:hover {
+    background: #ffe066 !important;
+    color: #111 !important;
+}
+</style>
+{% endblock %} 
