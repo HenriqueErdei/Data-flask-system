@@ -22,15 +22,41 @@ def faturamento():
     dashboard = get_dashboard_data()
     # Carregar opções de filtro
     csv_path = os.path.join(os.path.dirname(__file__), '../relatorios/base_faturamento.csv')
-    df = pd.read_csv(csv_path, sep=';')
-    df.columns = df.columns.str.strip()
-    anos_disponiveis = sorted(df['Ano'].dropna().unique())
-    filiais_disponiveis = sorted(df['Filial'].dropna().unique())
-    categorias_disponiveis = sorted(df['Categoria'].dropna().unique())
-    estados_disponiveis = sorted(df['Estado_Cliente'].dropna().unique())
-    produtos_disponiveis = sorted(df['Produto'].dropna().unique())
-    status_disponiveis = sorted(df['Status'].dropna().unique())
-    return render_template('empresa/faturamento.html', **dashboard, anos_disponiveis=anos_disponiveis, filiais_disponiveis=filiais_disponiveis, categorias_disponiveis=categorias_disponiveis, estados_disponiveis=estados_disponiveis, produtos_disponiveis=produtos_disponiveis, status_disponiveis=status_disponiveis)
+    import csv
+    anos_disponiveis = []
+    filiais_disponiveis = []
+    categorias_disponiveis = []
+    estados_disponiveis = []
+    produtos_disponiveis = []
+    status_disponiveis = []
+    
+    try:
+        with open(csv_path, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file, delimiter=';')
+            for row in reader:
+                cleaned_row = {k.strip(): v.strip() for k, v in row.items()}
+                if cleaned_row.get('Ano') and cleaned_row['Ano'] not in anos_disponiveis:
+                    anos_disponiveis.append(cleaned_row['Ano'])
+                if cleaned_row.get('Filial') and cleaned_row['Filial'] not in filiais_disponiveis:
+                    filiais_disponiveis.append(cleaned_row['Filial'])
+                if cleaned_row.get('Categoria') and cleaned_row['Categoria'] not in categorias_disponiveis:
+                    categorias_disponiveis.append(cleaned_row['Categoria'])
+                if cleaned_row.get('Estado_Cliente') and cleaned_row['Estado_Cliente'] not in estados_disponiveis:
+                    estados_disponiveis.append(cleaned_row['Estado_Cliente'])
+                if cleaned_row.get('Produto') and cleaned_row['Produto'] not in produtos_disponiveis:
+                    produtos_disponiveis.append(cleaned_row['Produto'])
+                if cleaned_row.get('Status') and cleaned_row['Status'] not in status_disponiveis:
+                    status_disponiveis.append(cleaned_row['Status'])
+    except FileNotFoundError:
+        pass
+    
+    return render_template('empresa/faturamento.html', **dashboard, 
+                         anos_disponiveis=sorted(anos_disponiveis), 
+                         filiais_disponiveis=sorted(filiais_disponiveis), 
+                         categorias_disponiveis=sorted(categorias_disponiveis), 
+                         estados_disponiveis=sorted(estados_disponiveis), 
+                         produtos_disponiveis=sorted(produtos_disponiveis), 
+                         status_disponiveis=sorted(status_disponiveis))
 
 @bp_empresa.route('/compras')
 def compras():
@@ -49,13 +75,33 @@ def estoque():
     # Carregar dados iniciais e opções de filtro
     dashboard = get_estoque_dashboard_data()
     csv_path = os.path.join(os.path.dirname(__file__), '../relatorios/base_estoque.csv')
-    df = pd.read_csv(csv_path, sep=';')
-    df.columns = df.columns.str.strip()
-    filiais_disponiveis = sorted(df['Filial'].dropna().unique())
-    categorias_disponiveis = sorted(df['Categoria'].dropna().unique())
-    produtos_disponiveis = sorted(df['Produto'].dropna().unique())
-    status_disponiveis = sorted(df['Status_Estoque'].dropna().unique())
-    return render_template('empresa/estoque.html', **dashboard, filiais_disponiveis=filiais_disponiveis, categorias_disponiveis=categorias_disponiveis, produtos_disponiveis=produtos_disponiveis, status_disponiveis=status_disponiveis)
+    import csv
+    filiais_disponiveis = []
+    categorias_disponiveis = []
+    produtos_disponiveis = []
+    status_disponiveis = []
+    
+    try:
+        with open(csv_path, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file, delimiter=';')
+            for row in reader:
+                cleaned_row = {k.strip(): v.strip() for k, v in row.items()}
+                if cleaned_row.get('Filial') and cleaned_row['Filial'] not in filiais_disponiveis:
+                    filiais_disponiveis.append(cleaned_row['Filial'])
+                if cleaned_row.get('Categoria') and cleaned_row['Categoria'] not in categorias_disponiveis:
+                    categorias_disponiveis.append(cleaned_row['Categoria'])
+                if cleaned_row.get('Produto') and cleaned_row['Produto'] not in produtos_disponiveis:
+                    produtos_disponiveis.append(cleaned_row['Produto'])
+                if cleaned_row.get('Status_Estoque') and cleaned_row['Status_Estoque'] not in status_disponiveis:
+                    status_disponiveis.append(cleaned_row['Status_Estoque'])
+    except FileNotFoundError:
+        pass
+    
+    return render_template('empresa/estoque.html', **dashboard, 
+                         filiais_disponiveis=sorted(filiais_disponiveis), 
+                         categorias_disponiveis=sorted(categorias_disponiveis), 
+                         produtos_disponiveis=sorted(produtos_disponiveis), 
+                         status_disponiveis=sorted(status_disponiveis))
 
 @bp_empresa.route('/financeiro')
 def financeiro():
