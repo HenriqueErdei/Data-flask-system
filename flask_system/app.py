@@ -51,4 +51,4 @@ def abrevia_numero(valor):
 app.jinja_env.filters['abrevia_numero'] = abrevia_numero
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
