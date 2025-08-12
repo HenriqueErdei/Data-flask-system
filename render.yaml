@@ -3,7 +3,7 @@ services:
     name: dataview-flask-system
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn flask_system.app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.16
