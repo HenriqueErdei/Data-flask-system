@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Novo Usuário{% endblock %}
+{% block content %}
+<h2>Cadastrar Novo Usuário</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="username" class="form-label">Usuário</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Permissões de Acesso</label><br>
+        <label>
+            <input type="checkbox" class="permissao-check" id="pode_estoque" name="pode_estoque">
+            Estoque
+        </label>
+        <label>
+            <input type="checkbox" class="permissao-check" id="pode_compras" name="pode_compras">
+            Compras
+        </label>
+        <label>
+            <input type="checkbox" class="permissao-check" id="pode_faturamento" name="pode_faturamento">
+            Faturamento
+        </label>
+        <label>
+            <input type="checkbox" class="permissao-check" id="pode_financeiro" name="pode_financeiro">
+            Financeiro
+        </label>
+        <label>
+            <input type="checkbox" class="permissao-check" id="pode_relatorios" name="pode_relatorios">
+            Relatórios
+        </label>
+    </div>
+    <div class="radio-custom mb-3">
+        <input type="radio" class="admin-check" id="is_admin" name="is_admin">
+        <span class="custom-radio"></span>
+        <label class="form-check-label" for="is_admin">Administrador</label>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <button type="submit" class="btn-modulo">Salvar</button>
+        <a href="/admin/usuarios" class="btn-modulo btn-cancelar">Cancelar</a>
+    </div>
+</form>
+{% endblock %} 

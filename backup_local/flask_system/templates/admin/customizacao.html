@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Customização do Sistema{% endblock %}
+{% block content %}
+<h2>Customização do Sistema</h2>
+<form method="post" enctype="multipart/form-data" class="mt-4">
+    <div class="mb-3">
+        <label for="cor_tema" class="form-label">Cor do Tema</label>
+        <input type="color" class="form-control form-control-color" id="cor_tema" name="cor_tema" value="{{ settings.cor_tema }}" style="width: 60px; height: 40px; padding: 2px;">
+    </div>
+    <div class="mb-3">
+        <label for="logo" class="form-label">Logo do Sistema</label>
+        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+        {% if settings.logo_path %}
+            <div class="mt-2">
+                <span>Logo atual:</span><br>
+                <img src="{{ settings.logo_path }}" alt="Logo atual" style="max-height: 80px; background: #fff; padding: 6px; border-radius: 8px;">
+            </div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn-modulo">Salvar</button>
+</form>
+{% endblock %}
+{% block styles %}
+{{ super() }}
+<style>
+a.btn-modulo, button.btn-modulo, input.btn-modulo, .btn-modulo, .btn-painel-admin {
+    background: var(--main-yellow) !important;
+    color: #222 !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10) !important;
+    transition: background 0.2s, color 0.2s !important;
+    padding: 10px 24px !important;
+    margin: 4px 0 !important;
+    display: inline-block !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-size: 1.1em !important;
+    cursor: pointer !important;
+    outline: none !important;
+    min-width: 120px;
+}
+.btn-modulo:hover, .btn-painel-admin:hover {
+    filter: brightness(0.85);
+    color: #fff !important;
+    text-decoration: none !important;
+}
+@media (max-width: 600px) {
+    .btn-modulo, .btn-painel-admin {
+        width: 100% !important;
+        min-width: unset;
+        margin: 6px 0 !important;
+    }
+}
+</style>
+{% endblock %} 

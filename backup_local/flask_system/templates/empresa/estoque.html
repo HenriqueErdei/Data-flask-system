@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Estoque{% endblock %}
+{% block content %}
+<h2>Estoque</h2>
+<p>Página de estoque em construção. Em breve novidades!</p>
+
+<div id="ia-chat" class="ia-chat-theme">
+  <div id="ia-messages" class="ia-messages"></div>
+  <div class="ia-input-area">
+    <input id="ia-input" type="text" placeholder="Pergunte sobre estoque..." class="ia-input" />
+    <button id="ia-send" class="ia-send">Enviar</button>
+  </div>
+</div>
+<style>
+.ia-chat-theme {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 40px 0 0 0;
+  background: var(--main-bg, #23272b);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.13);
+  border: 2px solid var(--main-theme-color);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  max-width: 100%;
+}
+.ia-messages {
+  flex: 1;
+  padding: 22px 32px 10px 32px;
+  overflow-y: auto;
+  color: var(--main-foreground, #fff);
+  font-size: 1.08em;
+  min-height: 60px;
+  max-height: 320px;
+  background: var(--main-bg, #23272b);
+  border-radius: 18px 18px 0 0;
+}
+.ia-input-area {
+  display: flex;
+  border-top: 1px solid var(--main-theme-color);
+  background: var(--main-bg, #23272b);
+  padding: 16px 24px 16px 24px;
+  border-radius: 0 0 18px 18px;
+}
+.ia-input {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 1.08em;
+  background: var(--main-foreground, #181a1b);
+  color: var(--main-foreground, #fff);
+  margin-right: 14px;
+}
+.ia-send {
+  background: var(--main-theme-color);
+  color: var(--main-bg, #23272b);
+  border: none;
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-weight: 700;
+  font-size: 1.08em;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(255,215,0,0.10);
+}
+.ia-send:hover {
+  filter: brightness(0.85);
+  color: #fff !important;
+}
+@media (max-width: 900px) {
+  .ia-chat-theme, .ia-messages, .ia-input-area { padding-left: 8px; padding-right: 8px; }
+  .ia-messages { font-size: 1em; }
+  .ia-send, .ia-input { font-size: 1em; padding: 10px 12px; }
+}
+</style>
+<script>
+const iaInput = document.getElementById('ia-input');
+const iaSend = document.getElementById('ia-send');
+const iaMessages = document.getElementById('ia-messages');
+function appendMessage(msg, from) {
+  const div = document.createElement('div');
+  div.textContent = msg;
+  div.style.margin = '8px 0';
+  div.style.textAlign = from === 'user' ? 'right' : 'left';
+  div.style.color = from === 'user' ? 'var(--main-theme-color)' : 'var(--main-foreground, #fff)';
+  iaMessages.appendChild(div);
+  iaMessages.scrollTop = iaMessages.scrollHeight;
+}
+iaSend.onclick = function() {
+  const pergunta = iaInput.value.trim();
+  if (!pergunta) return;
+  appendMessage(pergunta, 'user');
+  iaInput.value = '';
+  appendMessage('Pensando...', 'ia');
+  fetch('/api/ia_chat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ pergunta, modulo: 'estoque' })
+  })
+  .then(r => r.json())
+  .then(data => {
+    iaMessages.lastChild.textContent = data.resposta || 'Erro ao responder.';
+  })
+  .catch(() => { iaMessages.lastChild.textContent = 'Erro ao responder.'; });
+};
+iaInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') iaSend.click();
+});
+</script>
+{% endblock %} 

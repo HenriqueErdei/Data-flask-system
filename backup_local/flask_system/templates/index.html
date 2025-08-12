@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Início{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+    <h2>Bem-vindo, {{ session['username'] }}!</h2>
+    <p>Escolha um módulo para acessar:</p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/admin" class="btn-modulo btn-painel-admin">Painel Admin</a>
+        {% if session['pode_faturamento'] %}
+            <a href="/faturamento" class="btn-modulo">Faturamento</a>
+        {% endif %}
+        {% if session['pode_estoque'] %}
+            <a href="/estoque" class="btn-modulo">Estoque</a>
+        {% endif %}
+        {% if session['pode_compras'] %}
+            <a href="/compras" class="btn-modulo">Compras</a>
+        {% endif %}
+        {% if session['pode_financeiro'] %}
+            <a href="/financeiro" class="btn-modulo">Financeiro</a>
+        {% endif %}
+        {% if session['pode_relatorios'] %}
+            <a href="/relatorios" class="btn-modulo">Relatórios</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block styles %}
+{{ super() }}
+<style>
+.btn-modulo, .btn-painel-admin {
+    background: var(--main-yellow) !important;
+    color: #222 !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10) !important;
+    transition: background 0.2s, color 0.2s !important;
+    padding: 10px 24px !important;
+    margin: 4px 0 !important;
+    display: inline-block !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-size: 1.1em !important;
+    cursor: pointer !important;
+    outline: none !important;
+    min-width: 120px;
+}
+.btn-modulo:hover, .btn-painel-admin:hover {
+    filter: brightness(0.85);
+    color: #fff !important;
+    text-decoration: none !important;
+}
+@media (max-width: 600px) {
+    .btn-modulo, .btn-painel-admin {
+        width: 100% !important;
+        min-width: unset;
+        margin: 6px 0 !important;
+    }
+}
+</style>
+{% endblock %} 

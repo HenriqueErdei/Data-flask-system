@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% block title %}Painel de Faturamento{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <form id="filtrosDashboard" class="mb-4 d-flex gap-3 align-items-end flex-wrap">
+    <div>
+      <label for="filtroAno" class="form-label">Ano:</label>
+      <select id="filtroAno" class="form-control">
+        <option value="">Todos</option>
+        {% for ano in anos_disponiveis %}
+          <option value="{{ ano }}">{{ ano }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="filtroFilial" class="form-label">Filial:</label>
+      <select id="filtroFilial" class="form-control">
+        <option value="">Todas</option>
+        {% for filial in filiais_disponiveis %}
+          <option value="{{ filial }}">{{ filial }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="filtroCategoria" class="form-label">Categoria:</label>
+      <select id="filtroCategoria" class="form-control">
+        <option value="">Todas</option>
+        {% for categoria in categorias_disponiveis %}
+          <option value="{{ categoria }}">{{ categoria }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="filtroEstado" class="form-label">Estado:</label>
+      <select id="filtroEstado" class="form-control">
+        <option value="">Todos</option>
+        {% for estado in estados_disponiveis %}
+          <option value="{{ estado }}">{{ estado }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="filtroProduto" class="form-label">Produto:</label>
+      <select id="filtroProduto" class="form-control">
+        <option value="">Todos</option>
+        {% for produto in produtos_disponiveis %}
+          <option value="{{ produto }}">{{ produto }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="filtroStatus" class="form-label">Status:</label>
+      <select id="filtroStatus" class="form-control">
+        <option value="">Todos</option>
+        {% for s in status_disponiveis %}
+          <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+  <div class="row mb-4">
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Faturamento por Ano</h5>
+        <canvas id="graficoAno"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Faturamento por Mês</h5>
+        <canvas id="graficoMes"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Ticket Médio por Mês</h5>
+        <canvas id="graficoTicketMedio"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Faturamento por Categoria</h5>
+        <canvas id="graficoCategoria"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Faturamento por Produto (Top 10)</h5>
+        <canvas id="graficoProduto"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Faturamento por Filial</h5>
+        <canvas id="graficoFilial"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Faturamento por Estado</h5>
+        <div style="max-height: 400px; overflow-y: auto;">
+          <canvas id="graficoEstado" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="glass p-3 h-100">
+        <h5 class="text-center">Devoluções por Mês</h5>
+        <canvas id="graficoDevolucao"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.glass { background: rgba(30,34,30,0.92); border-radius: 18px; box-shadow: 0 2px 12px 0 rgba(255,215,0,0.08); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Instâncias globais dos gráficos
+let graficoAno, graficoMes, graficoTicketMedio, graficoCategoria, graficoProduto, graficoFilial, graficoEstado, graficoDevolucao;
+
+function criarGraficos(dados) {
+  if (graficoAno) graficoAno.destroy();
+  if (graficoMes) graficoMes.destroy();
+  if (graficoTicketMedio) graficoTicketMedio.destroy();
+  if (graficoCategoria) graficoCategoria.destroy();
+  if (graficoProduto) graficoProduto.destroy();
+  if (graficoFilial) graficoFilial.destroy();
+  if (graficoEstado) graficoEstado.destroy();
+  if (graficoDevolucao) graficoDevolucao.destroy();
+
+  graficoAno = new Chart(document.getElementById('graficoAno'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.faturamento_por_ano),
+      datasets: [{ label: 'Faturamento', data: Object.values(dados.faturamento_por_ano), backgroundColor: '#ffd700', borderRadius: 8 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+  graficoMes = new Chart(document.getElementById('graficoMes'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.faturamento_por_mes),
+      datasets: [{ label: 'Faturamento', data: Object.values(dados.faturamento_por_mes), backgroundColor: '#ffd700', borderRadius: 8 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+  graficoTicketMedio = new Chart(document.getElementById('graficoTicketMedio'), {
+    type: 'line',
+    data: {
+      labels: Object.keys(dados.ticket_medio_por_mes),
+      datasets: [{ label: 'Ticket Médio', data: Object.values(dados.ticket_medio_por_mes), borderColor: '#ffd700', backgroundColor: 'rgba(255,215,0,0.15)', tension: 0.4, fill: true, pointBackgroundColor: Array(Object.keys(dados.ticket_medio_por_mes).length).fill('#ffd700'), pointRadius: 4 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+  graficoCategoria = new Chart(document.getElementById('graficoCategoria'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.faturamento_por_categoria),
+      datasets: [{ label: 'Faturamento', data: Object.values(dados.faturamento_por_categoria), backgroundColor: '#ffd700', borderRadius: 8 }]
+    },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+  graficoProduto = new Chart(document.getElementById('graficoProduto'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.faturamento_por_produto),
+      datasets: [{ label: 'Faturamento', data: Object.values(dados.faturamento_por_produto), backgroundColor: '#ffd700', borderRadius: 8 }]
+    },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+  graficoFilial = new Chart(document.getElementById('graficoFilial'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.faturamento_por_filial),
+      datasets: [{ label: 'Faturamento', data: Object.values(dados.faturamento_por_filial), backgroundColor: '#ffd700', borderRadius: 8 }]
+    },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+  graficoEstado = new Chart(document.getElementById('graficoEstado'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.faturamento_por_estado),
+      datasets: [{ label: 'Faturamento', data: Object.values(dados.faturamento_por_estado), backgroundColor: '#ffd700', borderRadius: 8 }]
+    },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff', font: { size: 13 } } } } }
+  });
+  graficoDevolucao = new Chart(document.getElementById('graficoDevolucao'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(dados.devolucoes_por_mes),
+      datasets: [{ label: 'Devoluções', data: Object.values(dados.devolucoes_por_mes), backgroundColor: '#ff4d4d', borderRadius: 8 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } } }
+  });
+}
+
+function atualizarDashboard() {
+  const ano = document.getElementById('filtroAno').value;
+  const filial = document.getElementById('filtroFilial').value;
+  const categoria = document.getElementById('filtroCategoria').value;
+  const estado = document.getElementById('filtroEstado').value;
+  const produto = document.getElementById('filtroProduto').value;
+  const status = document.getElementById('filtroStatus').value;
+  const url = `/faturamento/dados?ano=${encodeURIComponent(ano)}&filial=${encodeURIComponent(filial)}&categoria=${encodeURIComponent(categoria)}&estado=${encodeURIComponent(estado)}&produto=${encodeURIComponent(produto)}&status=${encodeURIComponent(status)}`;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => criarGraficos(data));
+}
+
+document.getElementById('filtroAno').addEventListener('change', atualizarDashboard);
+document.getElementById('filtroFilial').addEventListener('change', atualizarDashboard);
+document.getElementById('filtroCategoria').addEventListener('change', atualizarDashboard);
+document.getElementById('filtroEstado').addEventListener('change', atualizarDashboard);
+document.getElementById('filtroProduto').addEventListener('change', atualizarDashboard);
+document.getElementById('filtroStatus').addEventListener('change', atualizarDashboard);
+
+// Inicializa os gráficos com os dados iniciais do backend
+window.addEventListener('DOMContentLoaded', () => {
+  criarGraficos({
+    faturamento_por_ano: {{ faturamento_por_ano|tojson }},
+    faturamento_por_mes: {{ faturamento_por_mes|tojson }},
+    ticket_medio_por_mes: {{ ticket_medio_por_mes|tojson }},
+    faturamento_por_categoria: {{ faturamento_por_categoria|tojson }},
+    faturamento_por_produto: {{ faturamento_por_produto|tojson }},
+    faturamento_por_filial: {{ faturamento_por_filial|tojson }},
+    faturamento_por_estado: {{ faturamento_por_estado|tojson }},
+    devolucoes_por_mes: {{ devolucoes_por_mes|tojson }}
+  });
+});
+</script>
+<!-- Chat IA centralizado -->
+<div id="ia-chat" class="ia-chat-theme">
+  <div id="ia-messages" class="ia-messages"></div>
+  <div class="ia-input-area">
+    <input id="ia-input" type="text" placeholder="Pergunte sobre faturamento..." class="ia-input" />
+    <button id="ia-send" class="ia-send">Enviar</button>
+  </div>
+</div>
+<style>
+.ia-chat-theme {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 40px 0 0 0;
+  background: var(--main-bg, #23272b);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.13);
+  border: 2px solid var(--main-theme-color);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  max-width: 100%;
+}
+.ia-messages {
+  flex: 1;
+  padding: 22px 32px 10px 32px;
+  overflow-y: auto;
+  color: var(--main-foreground, #fff);
+  font-size: 1.08em;
+  min-height: 60px;
+  max-height: 320px;
+  background: var(--main-bg, #23272b);
+  border-radius: 18px 18px 0 0;
+}
+.ia-input-area {
+  display: flex;
+  border-top: 1px solid var(--main-theme-color);
+  background: var(--main-bg, #23272b);
+  padding: 16px 24px 16px 24px;
+  border-radius: 0 0 18px 18px;
+}
+.ia-input {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 1.08em;
+  background: var(--main-foreground, #181a1b);
+  color: var(--main-foreground, #fff);
+  margin-right: 14px;
+}
+.ia-send {
+  background: var(--main-theme-color);
+  color: var(--main-bg, #23272b);
+  border: none;
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-weight: 700;
+  font-size: 1.08em;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(255,215,0,0.10);
+}
+.ia-send:hover {
+  filter: brightness(0.85);
+  color: #fff !important;
+}
+@media (max-width: 900px) {
+  .ia-chat-theme, .ia-messages, .ia-input-area { padding-left: 8px; padding-right: 8px; }
+  .ia-messages { font-size: 1em; }
+  .ia-send, .ia-input { font-size: 1em; padding: 10px 12px; }
+}
+</style>
+<script>
+const iaInput = document.getElementById('ia-input');
+const iaSend = document.getElementById('ia-send');
+const iaMessages = document.getElementById('ia-messages');
+function appendMessage(msg, from) {
+  const div = document.createElement('div');
+  div.textContent = msg;
+  div.style.margin = '8px 0';
+  div.style.textAlign = from === 'user' ? 'right' : 'left';
+  div.style.color = from === 'user' ? 'var(--main-theme-color)' : 'var(--main-foreground, #fff)';
+  iaMessages.appendChild(div);
+  iaMessages.scrollTop = iaMessages.scrollHeight;
+}
+iaSend.onclick = function() {
+  const pergunta = iaInput.value.trim();
+  if (!pergunta) return;
+  appendMessage(pergunta, 'user');
+  iaInput.value = '';
+  appendMessage('Pensando...', 'ia');
+  fetch('/api/ia_chat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ pergunta, modulo: 'faturamento' })
+  })
+  .then(r => r.json())
+  .then(data => {
+    iaMessages.lastChild.textContent = data.resposta || 'Erro ao responder.';
+  })
+  .catch(() => { iaMessages.lastChild.textContent = 'Erro ao responder.'; });
+};
+iaInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') iaSend.click();
+});
+</script>
+{% endblock %} 
