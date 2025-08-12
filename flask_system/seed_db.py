@@ -1,5 +1,5 @@
-from app import app, db
-from models import User
+from .app import app, db
+from .models import User
 
 with app.app_context():
     # Cria o usuário admin com todas as permissões

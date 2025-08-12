@@ -1,5 +1,5 @@
 from flask import session, redirect, url_for, flash
-from models import User
+from ..models import User
 from functools import wraps
 
 def autenticar_usuario(username, senha):

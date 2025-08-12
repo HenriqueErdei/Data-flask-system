@@ -1,17 +1,17 @@
 from flask import Flask
 import os
-from config import SECRET_KEY
+from .config import SECRET_KEY
 from flask_sqlalchemy import SQLAlchemy
-import config
-from models import db, Settings
+from . import config
+from .models import db, Settings
 from dotenv import load_dotenv
 load_dotenv()
 
 # Importar blueprints
-from routes.auth_routes import bp_auth
-from routes.admin_routes import bp_admin
-from routes.empresa_routes import bp_empresa
-from routes.ia_routes import bp_ia
+from .routes.auth_routes import bp_auth
+from .routes.admin_routes import bp_admin
+from .routes.empresa_routes import bp_empresa
+from .routes.ia_routes import bp_ia
 
 app = Flask(__name__)
 app.config.from_object(config)

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, flash
-from utils.faturamento import get_dashboard_data
-import pandas as pd, os
-from utils.estoque import get_estoque_dashboard_data
-from models import User
+from ..utils.faturamento import get_dashboard_data
+import os
+from ..utils.estoque import get_estoque_dashboard_data
+from ..models import User
 from .ia_routes import bp_ia
 
 bp_empresa = Blueprint('empresa', __name__)

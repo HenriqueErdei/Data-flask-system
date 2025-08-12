@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from utils.auth import admin_required, login_user
-from utils.logger import registrar_log
-from models import User, db
+from ..utils.auth import admin_required, login_user
+from ..utils.logger import registrar_log
+from ..models import User, db
 import uuid
 from werkzeug.utils import secure_filename
 import os
-from models import Settings
+from ..models import Settings
 
 bp_admin = Blueprint('admin', __name__)
 
